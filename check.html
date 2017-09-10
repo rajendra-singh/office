@@ -1,0 +1,44 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    
+var ulid = document.getElementById('ulid');
+var liid = document.getElementById('liid');
+var cliid = liid.cloneNode(true);
+var aid = document.getElementById('aid');
+var ul2id = document.getElementById('ul2id');
+var li2id = document.getElementById('li2id');
+ulid.appendChild(cliid);
+	$(".list > li a").click(function() {
+        $(this).parent().find("ul").toggle();
+		
+    })
+});
+
+</script>
+
+</head>
+<body>
+<ul class="list" id="ulid">
+    <li id="liid">
+        <a id="aid">Rifles</a>
+        <ul id="ul2id">
+            <li id="li2id">M16</li>  
+            <li>MP5</li>  
+            <li>AR15</li>  
+            <li>M16A1</li>            
+        </ul>                
+    </li>
+    
+    <li>
+        <a>Guns</a>
+        <ul>
+            <li>Magnum</li>  
+            <li>Colt</li>      
+        </ul>                
+    </li>
+</ul>
+</body>
+</html>
