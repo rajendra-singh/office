@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule created="1604716500846" id="0a1cc7c475a01a1b8175a08e976e0138" language="beanshell" modified="1607378043474" name="Sempra Attribute Search Rule" type="BeforeProvisioning">
+  <Description>This rule is to fetch user's attribute</Description>
+  <Source>  
+ import sailpoint.object.Identity;
+import sailpoint.object.QueryOptions;
+import sailpoint.object.Link;
+import sailpoint.object.Filter;
+import java.util.*;
+import sailpoint.object.Application;
+
+
+String[] username={"08946","11614","13147","13531","29372","33320","33471","37412","41195","42478","47244","47413","48274","48347","48364","49601","51739","53521","53595","56945","61498","68086","68087","68088","71081","73330","73439","81471","81823","81882","82070","85366","87440","87519","87649","87850","90054","92485","B2272","B2565","B4507","B4850","B6408","B6656","B7846","B7917","B8043","C0040","C0624","C2106","C3373","C4535","C4549","C4557","C4895","C5099","C5454","C5709","C7284","D0131","D0194","D0237","D0346","D0361","D0707","D0986","D1608","D1609","D1613","D1614","D1827","D1828","D1829","D2510","D2880","D2905","D2906","D3264","D3533","D3747","D3748","D3972","D4102","D4198","D4199","D4200","D4221","D4233","D4235","D4495","D4512"};
+  String[] applications={"Active Directory - CORP", "CCURE", "HR - Vantage", "HR - NET", "ServiceNow", "ServiceNow - DEV", "ServiceNow - QA"};
+String status="NA";
+String sempraStatus_new = "";
+StringBuilder result=new StringBuilder();
+
+ArrayList userList=new ArrayList();
+Application app=context.getObjectByName(Application.class,"Active Directory - CORP");
+
+Link link= null;
+
+for (String user:username)
+{
+	Identity id = context.getObjectByName(Identity.class, user);
+	if (id != null) {
+
+	 result.append(id.getName());
+	//result.append(","+id.getAttribute("employeeId");
+	// result.append(","+id.getAttribute("firstname"));
+	// result.append(","+id.getAttribute("fullName"));
+	// result.append(","+id.getAttribute("email"));
+	// result.append(","+id.getAttribute("manager"));
+	// result.append(","+id.getAttribute("companyName"));
+	// result.append(","+id.getAttribute("companyCode"));
+	// result.append(","+id.getAttribute("jobCodeName"));
+
+	 result.append(","+id.getAttribute("statusName"));
+	 for(String appl : applications)
+		{
+			Application app = context.getObjectByName(Application.class,appl);
+			if(app != null)
+			{
+				link = id.getLink(app);
+        if(link!=null)
+        {
+          result.append(",");
+				sempraStatus_new = link.getApplicationName()+" : "+link.getAttribute("sempraStatus");
+				result.append(sempraStatus_new);
+        }
+        else
+        {
+          result.append(",");
+          sempraStatus_new = appl+" : "+"No Account";
+          result.append(sempraStatus_new);
+        }
+			}
+		}
+	// result.append(","+id.getAttribute("statusCode"));
+	// result.append(","+id.getAttribute("terminationDate"));
+	link=id.getLink(app);
+	if (null!=link)
+	{
+	status=link.getAttribute("IIQDisabled")==null?"Active":"inactive";
+	}
+	result.append(","+status);
+
+
+	 userList.add(result.toString());
+	//userList.add(ccure_app);
+	result.setLength(0);
+	}
+}
+
+ return userList;
+  </Source>
+</Rule>
